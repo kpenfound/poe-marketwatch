@@ -4,26 +4,27 @@ import (
 	"fmt"
 	"log"
 	"database/sql"
-	"github.com/lib/pq"
+	_ "github.com/lib/pq"
 )
 
 const (
   host     = "localhost"
   port     = 5432
-  user     = "kyle"
+	user     = "kyle"
+	password = "test"
   dbname   = "standard"
 )
 
 
 func init_db() *sql.DB {
   psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-    "dbname=%s sslmode=disable",
-    host, port, user, dbname)
+    "password=%s dbname=%s sslmode=disable",
+    host, port, user, password, dbname)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
+	//defer db.Close()
 
 	err = db.Ping()
 	if err != nil {
@@ -35,9 +36,9 @@ func init_db() *sql.DB {
 
 func saveUnique(item uniqueItem, db *sql.DB) {
 	q := `
-insert into uniques
+INSERT INTO uniques
 (id, name, corrupted, original_price, calculated_price)
-VALUES (?, ?, ?, ?, ?);`
+VALUES ($1, $2, $3, $4, $5);`
 	_, err := db.Exec(q, item.Id, item.Name, item.Corrupted, item.OriginalPrice, item.CalculatedPrice)
 	if err != nil {
 		log.Fatal(err)
@@ -46,9 +47,9 @@ VALUES (?, ?, ?, ?, ?);`
 
 func saveCurrency(item currencyItem, db *sql.DB) {
 	q := `
-insert into currency
+INSERT INTO currency
 (id, type, original_price, calculated_price)
-VALUES (?, ?, ?, ?);`
+VALUES ($1, $2, $3, $4);`
 	_, err := db.Exec(q, item.Id, item.Type, item.OriginalPrice, item.CalculatedPrice)
 	if err != nil {
 		log.Fatal(err)
@@ -57,9 +58,9 @@ VALUES (?, ?, ?, ?);`
 
 func saveDivination(item divinationCardItem, db *sql.DB) {
 	q := `
-insert into divination_cards
+INSERT INTO divination_cards
 (id, name, mods, max_stack_size, original_price, original_quantity, calculated_price)
-VALUES (?, ?, ?, ?, ?);`
+VALUES ($1, $2, $3, $4, $5, $6, $7);`
 	_, err := db.Exec(q, item.Id, item.Name, item.Mods, item.MaxStackSize, item.OriginalPrice, item.OriginalQuantity, item.CalculatedPrice)
 	if err != nil {
 		log.Fatal(err)
