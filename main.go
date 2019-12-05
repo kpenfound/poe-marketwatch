@@ -4,6 +4,10 @@ import (
 	"fmt"
 )
 
+// TODO:
+// - Store items
+// - Calculate currency exchange
+
 func main() {
 	fmt.Println("Getting market data...")
 
@@ -20,4 +24,22 @@ func main() {
 
 	fmt.Printf("%+v\n", items)
 	fmt.Println(apiRes.NextChangeId)
+
+	processItems(items)
+}
+
+func processItems(items []stashItem) {
+	for _, i := range items {
+		switch i.FrameType {
+		case 3:
+			u := getUnique(i)
+			saveUnique(u)
+		case 5:
+			c := getCurrency(i)
+			saveCurrency(c)
+		case 6:
+			d := getDivination(i)
+			saveDivination(d)
+		}
+	}
 }
