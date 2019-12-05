@@ -32,13 +32,13 @@ func processItems(items []stashItem) {
 	for _, i := range items {
 		switch i.FrameType {
 		case 3:
-			u := getUnique(i)
+			u := getUniqueFromStashItem(i)
 			saveUnique(u)
 		case 5:
-			c := getCurrency(i)
+			c := getCurrencyFromStashItem(i)
 			saveCurrency(c)
 		case 6:
-			d := getDivination(i)
+			d := getDivinationFromStashItem(i)
 			saveDivination(d)
 		}
 	}

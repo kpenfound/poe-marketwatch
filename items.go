@@ -5,6 +5,7 @@ import (
 )
 
 type uniqueItem struct {
+	Id string
 	Name string
 	Corrupted bool
 	OriginalPrice string
@@ -12,12 +13,14 @@ type uniqueItem struct {
 }
 
 type currencyItem struct {
+	Id string
 	Type string
 	OriginalPrice string
 	CalculatedPrice float64
 }
 
 type divinationCardItem struct {
+	Id string
 	Name string
 	Mods string
 	MaxStackSize int
@@ -26,23 +29,26 @@ type divinationCardItem struct {
 	CalculatedPrice float64
 }
 
-func getUnique(si stashItem) uniqueItem {
+func getUniqueFromStashItem(si stashItem) uniqueItem {
 	u := uniqueItem{ Name: si.Name}
+	u.Id = si.Id
 	u.Corrupted = si.Corrupted
 	u.OriginalPrice = si.Note
 	u.CalculatedPrice = formatPrice(si.Note)
 	return u
 }
 
-func getCurrency(si stashItem) currencyItem {
+func getCurrencyFromStashItem(si stashItem) currencyItem {
 	c := currencyItem{Type: si.TypeLine}
+	c.Id = si.Id
 	c.OriginalPrice = si.TypeLine
 	c.CalculatedPrice = formatPrice(si.TypeLine)
 	return c
 }
 
-func getDivination(si stashItem) divinationCardItem {
+func getDivinationFromStashItem(si stashItem) divinationCardItem {
 	d := divinationCardItem{Name: si.TypeLine}
+	d.Id = si.Id
 	d.Mods = strings.Join(si.ExplicitMods[:], ",")
 	d.MaxStackSize = si.MaxStackSize
 	d.OriginalPrice = si.Note
