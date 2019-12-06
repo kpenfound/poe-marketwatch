@@ -8,15 +8,14 @@ type uniqueItem struct {
 	Id string
 	Name string
 	Corrupted bool
-	OriginalPrice string
-	CalculatedPrice float64
+	OriginalPrice price
 }
 
 type currencyItem struct {
 	Id string
 	Type string
-	OriginalPrice string
-	CalculatedPrice float64
+	OriginalPrice price
+	OriginalQuantity int
 }
 
 type divinationCardItem struct {
@@ -24,25 +23,24 @@ type divinationCardItem struct {
 	Name string
 	Mods string
 	MaxStackSize int
-	OriginalPrice string
+	OriginalPrice price
 	OriginalQuantity int
-	CalculatedPrice float64
 }
 
 func getUniqueFromStashItem(si stashItem) uniqueItem {
 	u := uniqueItem{ Name: si.Name}
 	u.Id = si.Id
 	u.Corrupted = si.Corrupted
-	u.OriginalPrice = si.Note
-	u.CalculatedPrice = formatPrice(si.Note)
+	u.OriginalPrice = interpretPrice(si.Note)
 	return u
 }
 
 func getCurrencyFromStashItem(si stashItem) currencyItem {
 	c := currencyItem{Type: si.TypeLine}
 	c.Id = si.Id
-	c.OriginalPrice = si.TypeLine
-	c.CalculatedPrice = formatPrice(si.TypeLine)
+	c.Type = si.TypeLine
+	c.OriginalPrice = interpretPrice(si.Note)
+	c.OriginalQuantity = si.StackSize
 	return c
 }
 
@@ -51,9 +49,8 @@ func getDivinationFromStashItem(si stashItem) divinationCardItem {
 	d.Id = si.Id
 	d.Mods = strings.Join(si.ExplicitMods[:], ",")
 	d.MaxStackSize = si.MaxStackSize
-	d.OriginalPrice = si.Note
+	d.OriginalPrice = interpretPrice(si.Note)
 	d.OriginalQuantity = si.StackSize
-	d.CalculatedPrice = formatPrice(si.Note) / float64(si.StackSize)
 	return d
 }
 
