@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 // TODO:
@@ -44,6 +45,10 @@ func main() {
 		go handleResponseAsync(league, categories, apiRes, db, re, &wg)
 	
 		saveApiPage(apiRes.NextChangeId, db)
+
+		if i % 100 == 0 { // Wait a minute every 100 iterations
+			time.Sleep(time.Second * 60)
+		}
 		i++
 	}
 
