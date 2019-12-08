@@ -25,7 +25,7 @@ func isPrice(rawPrice string, re *regexp.Regexp) bool {
 func interpretPrice(rawPrice string) price {
 	rawParts := strings.Split(rawPrice, " ")
 	pr := float64(0)
-	if strings.ContainsAny(rawParts[1], "/") {
+	if strings.ContainsAny(rawParts[1], "/") { // Price is fraction
 		fractionParts := strings.Split(rawParts[1], "/")
 
 		fractionNum, err := strconv.ParseFloat(fractionParts[0], 64)
@@ -43,7 +43,7 @@ func interpretPrice(rawPrice string) price {
 		}
 
 		pr = fractionNum / fractionDen
-	} else {
+	} else { // Price is int or decimal
 		parsed, err := strconv.ParseFloat(rawParts[1], 64)
 		if err != nil {
 			log.Printf("Error parsing currency %v\n", rawParts)

@@ -31,7 +31,7 @@ func main() {
 	log.Println("Getting market data...")
 	categories := []int{3, 5, 6}
 	league := os.Getenv("LEAGUE")
-	//pageId := "525912708-543063663-513378145-586183293-557264789"
+
 	db := init_db()
 	re := init_currency()
 	i := 1
@@ -41,12 +41,14 @@ func main() {
 		apiRes := apiGet(pageId)
 		log.Printf("Retrieved API page %v\n", i)
 
+		// Async process all the data so we can keep requesting
 		wg.Add(1)
 		go handleResponseAsync(league, categories, apiRes, db, re, &wg)
 
 		log.Printf("Last Change: %v\n", pageId)
 		log.Printf("Next Change: %v\n", apiRes.NextChangeId)
-		if pageId == apiRes.NextChangeId || apiRes.NextChangeId == "" { // Wait a minute if we're caught up
+		if pageId == apiRes.NextChangeId || apiRes.NextChangeId == "" {
+			// Wait a minute if we're caught up
 			log.Println("All caught up.... waiting")
 			time.Sleep(time.Second * 60)
 		} else {
@@ -82,7 +84,7 @@ func processItems(items []stashItem, db *sql.DB, re *regexp.Regexp) {
 	log.Printf("Processing %d items...\n", len(items))
 	for _, i := range items {
 		if isPrice(i.Note, re) {
-			switch i.FrameType {
+			switch i.FrameType { // Easiest way to tell what kind of item it is
 			case 3:
 				u := getUniqueFromStashItem(i)
 				saveUnique(u, db)
