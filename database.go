@@ -3,23 +3,15 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"database/sql"
 	_ "github.com/lib/pq"
 )
 
-const (
-  host     = "localhost"
-  port     = 5432
-	user     = "kyle"
-	password = "test"
-  dbname   = "standard"
-)
-
-
 func init_db() *sql.DB {
   psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
     "password=%s dbname=%s sslmode=disable",
-    host, port, user, password, dbname)
+    os.Getenv("DB_HOST"), 5432, os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal(err)

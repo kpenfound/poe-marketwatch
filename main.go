@@ -2,17 +2,16 @@ package main
 
 import (
 	"log"
+	"os"
 	"database/sql"
 	"regexp"
 	"sync"
-	"os"
 	"os/signal"
 	"syscall"
 	"time"
 )
 
 // TODO:
-// - Configure database connection and league
 // - Save out raw data to backup files
 // - Track time series price data
 
@@ -31,7 +30,7 @@ func main() {
 	
 	log.Println("Getting market data...")
 	categories := []int{3, 5, 6}
-	league := "Standard"
+	league := os.Getenv("LEAGUE")
 	//pageId := "525912708-543063663-513378145-586183293-557264789"
 	db := init_db()
 	re := init_currency()

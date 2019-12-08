@@ -18,8 +18,9 @@ Configure the application to connect to the database...
 
 ### Run the application
 Run `$> go build` to product the executable
-Run `$> ./poe-marketwatch`
+Run `$>DB_NAME=<database> DB_USER=<username> DB_HOST=<host> DB_PASSWORD=<password> LEAGUE=<league> ./poe-marketwatch`
 After some time, enough data will accumulate to crunch some numbers...
+If you want to exit, `Ctrl+C` will safely complete the current page and exit.
 
 ### Crunch some numbers
 First, refresh the materialized views in postgres. This should always be done before checking data:
