@@ -13,7 +13,11 @@ import (
 
 // TODO:
 // - Calculate currency
-// - Analyze prices
+// - Analyze div/unique prices
+// - Relate div cards to unique items
+// - Report profitable div cards
+// - Save out raw data to backup files
+// - Track time series price data
 
 func main() {
 	sigs := make(chan os.Signal, 1)
