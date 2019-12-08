@@ -45,19 +45,19 @@ func main() {
 		wg.Add(1)
 		go handleResponseAsync(league, categories, apiRes, db, re, &wg)
 
-		log.Printf("Last Change: %v\n", pageId)
 		log.Printf("Next Change: %v\n", apiRes.NextChangeId)
 		if pageId == apiRes.NextChangeId || apiRes.NextChangeId == "" {
-			// Wait a minute if we're caught up
+			// Wait a bit if we're caught up
 			log.Println("All caught up.... waiting")
-			time.Sleep(time.Second * 60)
+			time.Sleep(time.Second * 10)
 		} else {
 			pageId = apiRes.NextChangeId
 			saveApiPage(apiRes.NextChangeId, db)
 		}
 
-		if i%100 == 0 { // Wait a minute every 100 iterations
-			time.Sleep(time.Second * 60)
+		if i%100 == 0 { // Make sure workers are caught up every 100 iterations
+			time.Sleep(time.Second * 5)
+			wg.Wait()
 		}
 		i++
 	}

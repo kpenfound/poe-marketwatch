@@ -62,7 +62,7 @@ FROM (
   SELECT cd.id as a, (original_price / original_quantity) as price, original_price_currency as b, original_quantity as quantity
     FROM currency c
     INNER JOIN currency_dictionary cd ON cd."name" = c."type"
-    WHERE created_at > now() - interval '3 days'
+    WHERE created_at > now() - interval '1 day'
     AND original_quantity > 0
     AND original_price_currency IN ('chaos', 'exa', 'mir', 'fuse', 'chisel', 'alt', 'gcp', 'divine', 'regal')
 ) inr
