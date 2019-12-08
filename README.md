@@ -33,4 +33,4 @@ First, refresh the materialized views in postgres. This should always be done be
 
 Run `psql> REFRESH MATERIALIZED VIEW mat_chaos_currency_rates; REFRESH MATERIALIZED VIEW mat_div_unique_pairs;`
 
-See the profitable divination cards: `psql> SELECT * FROM divination_card_profits`
+See the profitable divination cards: `psql> SELECT * FROM divination_card_profits;`
