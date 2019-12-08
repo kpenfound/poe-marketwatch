@@ -5,30 +5,30 @@ import (
 )
 
 type uniqueItem struct {
-	Id string
-	Name string
-	Corrupted bool
+	Id            string
+	Name          string
+	Corrupted     bool
 	OriginalPrice price
 }
 
 type currencyItem struct {
-	Id string
-	Type string
-	OriginalPrice price
+	Id               string
+	Type             string
+	OriginalPrice    price
 	OriginalQuantity int
 }
 
 type divinationCardItem struct {
-	Id string
-	Name string
-	Mods string
-	MaxStackSize int
-	OriginalPrice price
+	Id               string
+	Name             string
+	Mods             string
+	MaxStackSize     int
+	OriginalPrice    price
 	OriginalQuantity int
 }
 
 func getUniqueFromStashItem(si stashItem) uniqueItem {
-	u := uniqueItem{ Name: si.Name}
+	u := uniqueItem{Name: si.Name}
 	u.Id = si.Id
 	u.Corrupted = si.Corrupted
 	u.OriginalPrice = interpretPrice(si.Note)

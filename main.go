@@ -1,12 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"os"
-	"database/sql"
+	"os/signal"
 	"regexp"
 	"sync"
-	"os/signal"
 	"syscall"
 	"time"
 )
@@ -25,9 +25,9 @@ func main() {
 	go func() {
 		sig := <-sigs
 		log.Println(sig)
-		done =true
+		done = true
 	}()
-	
+
 	log.Println("Getting market data...")
 	categories := []int{3, 5, 6}
 	league := os.Getenv("LEAGUE")
@@ -40,7 +40,7 @@ func main() {
 	for !done {
 		apiRes := apiGet(pageId)
 		log.Printf("Retrieved API page %v\n", i)
-	
+
 		wg.Add(1)
 		go handleResponseAsync(league, categories, apiRes, db, re, &wg)
 
@@ -54,7 +54,7 @@ func main() {
 			saveApiPage(apiRes.NextChangeId, db)
 		}
 
-		if i % 100 == 0 { // Wait a minute every 100 iterations
+		if i%100 == 0 { // Wait a minute every 100 iterations
 			time.Sleep(time.Second * 60)
 		}
 		i++
@@ -69,7 +69,7 @@ func main() {
 func handleResponseAsync(league string, categories []int, res *apiResponse, db *sql.DB, re *regexp.Regexp, wg *sync.WaitGroup) {
 	defer wg.Done()
 	var items []stashItem
-	
+
 	for _, s := range res.Stashes {
 		newItems := findItemsByCategoryAndLeague(s, categories, league)
 		items = append(items, newItems...)

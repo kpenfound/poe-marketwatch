@@ -1,14 +1,14 @@
 package main
 
 import (
-	"regexp"
-	"strings"
-	"strconv"
 	"log"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 type price struct {
-	Price float64
+	Price    float64
 	Currency string
 }
 
