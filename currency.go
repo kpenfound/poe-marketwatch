@@ -30,19 +30,25 @@ func interpretPrice(rawPrice string) price {
 
 		fractionNum, err := strconv.ParseFloat(fractionParts[0], 64)
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("Error parsing currency %v\n", fractionParts)
+			log.Println(err)
+			return price{Price: 0.0, Currency: "err"}
 		}
 
 		fractionDen, err := strconv.ParseFloat(fractionParts[1], 64)
-		if err != nil {
-			log.Fatal(err)
+		if err != nil || fractionDen == 0 {
+			log.Printf("Error parsing currency %v\n", fractionParts)
+			log.Println(err)
+			return price{Price: 0.0, Currency: "err"}
 		}
 
 		pr = fractionNum / fractionDen
 	} else {
 		parsed, err := strconv.ParseFloat(rawParts[1], 64)
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("Error parsing currency %v\n", rawParts)
+			log.Println(err)
+			return price{Price: 0.0, Currency: "err"}
 		}
 
 		pr = parsed

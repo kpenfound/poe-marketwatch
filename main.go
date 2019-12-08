@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"database/sql"
 	"regexp"
 	"sync"
@@ -24,27 +24,35 @@ func main() {
 
 	go func() {
 		sig := <-sigs
-		fmt.Println(sig)
+		log.Println(sig)
 		done =true
 	}()
 	
-	fmt.Println("Getting market data...")
+	log.Println("Getting market data...")
 	categories := []int{3, 5, 6}
 	league := "Standard"
 	//pageId := "525912708-543063663-513378145-586183293-557264789"
 	db := init_db()
 	re := init_currency()
 	i := 1
+	pageId := getLatestApiPage(db)
 
 	for !done {
-		pageId := getLatestApiPage(db)
 		apiRes := apiGet(pageId)
-		fmt.Printf("Retrieved API page %v\n", i)
+		log.Printf("Retrieved API page %v\n", i)
 	
 		wg.Add(1)
 		go handleResponseAsync(league, categories, apiRes, db, re, &wg)
-	
-		saveApiPage(apiRes.NextChangeId, db)
+
+		log.Printf("Last Change: %v\n", pageId)
+		log.Printf("Next Change: %v\n", apiRes.NextChangeId)
+		if pageId == apiRes.NextChangeId || apiRes.NextChangeId == "" { // Wait a minute if we're caught up
+			log.Println("All caught up.... waiting")
+			time.Sleep(time.Second * 60)
+		} else {
+			pageId = apiRes.NextChangeId
+			saveApiPage(apiRes.NextChangeId, db)
+		}
 
 		if i % 100 == 0 { // Wait a minute every 100 iterations
 			time.Sleep(time.Second * 60)
@@ -52,7 +60,7 @@ func main() {
 		i++
 	}
 
-	fmt.Println("Waiting for workers to finish")
+	log.Println("Waiting for workers to finish")
 	wg.Wait()
 
 	db.Close()
@@ -71,10 +79,9 @@ func handleResponseAsync(league string, categories []int, res *apiResponse, db *
 }
 
 func processItems(items []stashItem, db *sql.DB, re *regexp.Regexp) {
-	fmt.Printf("Processing %d items...\n", len(items))
+	log.Printf("Processing %d items...\n", len(items))
 	for _, i := range items {
 		if isPrice(i.Note, re) {
-		//	fmt.Printf("Saving %+v\n", i)
 			switch i.FrameType {
 			case 3:
 				u := getUniqueFromStashItem(i)
