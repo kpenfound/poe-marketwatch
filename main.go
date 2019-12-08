@@ -12,10 +12,7 @@ import (
 )
 
 // TODO:
-// - Calculate currency
-// - Analyze div/unique prices
-// - Relate div cards to unique items
-// - Report profitable div cards
+// - Configure database connection and league
 // - Save out raw data to backup files
 // - Track time series price data
 

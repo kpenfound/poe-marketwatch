@@ -149,6 +149,7 @@ FROM (SELECT distinct "name" from uniques) u
 INNER JOIN (SELECT distinct "name", max_stack_size, mods FROM divination_cards) d ON d."mods" LIKE concat('%<uniqueitem>{', u."name", '}%')
 ;
 
+CREATE VIEW divination_card_profits AS
 SELECT mdup.unique_name, 
   mdup.card_name, 
   round((up.percentile_25 / mdup.max_stack_size) - dp.percentile_25, 1) as profit,
